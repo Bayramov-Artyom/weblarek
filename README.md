@@ -165,3 +165,61 @@ interface IError{
 
 ### Модели данных
 
+#### Класс ProductsModel
+Хранит список всех товаров, которые пришли с сервера. 
+
+```ts 
+constructor()
+```
+
+Поля:
+`protected items: IProduct[]` - массив всех товаров  
+`protected openedProduct: IProduct | null` - товар в открытом модальном окне 
+
+Методы:
+`loadProducts(products: IProduct[]): void` — записывает переданный массив товаров в `items`
+`getProductList(): IProduct[]` — возвращает текущий список товаров каталога
+`findProduct(id: string): IProduct | undefined` — ищет товар с указанным id в `items`
+`openProduct(product: IProduct): void` — сохраняет товар в `openedProduct`
+`getOpenedProduct(): IProduct | null` — возвращает товар, сохранённый как открытый, либо `null`
+
+#### Класс BasketProducts
+Корзина для хранинения товаров, которые хотят приобрести. Класс нужен для добавления и удаления товаров 
+
+```ts 
+constructor()
+```
+
+Поля:
+`protected products: IProduct[]` - товары в корзине
+
+Методы: 
+`getProducts(): IProduct[]` - получение массива товаров, которые находятся в корзине;
+`addProduct(product: IProduct): void`добавление товара, который был получен в параметре, в массив корзины;
+`deleteProduct(id: string): void`удаление товара, полученного в параметре из массива корзины;
+`deleteBasket(): void`очистка корзины;
+`getTotalPrice(): number`получение стоимости всех товаров в корзине;
+`getProductsAmount(): number`получение количества товаров в корзине;
+`checkProduct(id: string): boolean`проверка наличия товара в корзине по его id, полученного в параметр метода.
+
+#### Класс Buyer
+Класс необходим для работы с данными покупателя 
+
+```ts
+constructor()
+```
+
+Поля:
+`protected payment: TPayment|null` - вид оплаты
+`protected address: string` - адрес
+`protected phone: string` - телефон
+`protected email: string` - emial(электронная почта)
+
+Методы:
+`updatePayment(payment: TPayment|null): void` - сохранение виды платежа 
+`updateAddress(address: string): void` - сохранение адреса
+`updatePhone(phone: string): void` - сохранение телефона
+`updateEmail(email: string): void` - сохранение emial(электронная почта)
+`getBuyer(): IBuyer`получение всех данных покупателя;
+`deleteBuyer():void`очистка данных покупателя;
+`validation(): IError`валидация данных. 
