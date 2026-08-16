@@ -121,7 +121,7 @@ type TPayment = "cash"|"card";
 #### Интерфейс IBuyer
 ```ts
 interface IBuyer {
-  payment: TPayment;
+  payment: TPayment| null;
   email: string;
   phone: string;
   address: string;
@@ -165,7 +165,7 @@ interface IError{
 
 ### Модели данных
 
-#### Класс ProductsModel
+#### Класс ProductsModels
 Хранит список всех товаров, которые пришли с сервера. 
 
 ```ts 
@@ -222,4 +222,18 @@ constructor()
 `updateEmail(email: string): void` - сохранение emial(электронная почта)
 `getBuyer(): IBuyer`получение всех данных покупателя;
 `deleteBuyer():void`очистка данных покупателя;
-`validation(): IError`валидация данных. 
+`validate(): IError`валидация данных. 
+
+
+### Слой коммуникации
+
+#### Класс WebLarekApi
+Класс необходим для выполнения запроса на сервер с помощью метода get и будет получать с сервера объект с массивом товаров.
+
+```ts
+constructor(api: IApi)
+```
+
+Методы:
+`getProductList(): Promise<IProductListResponse<IProduct>>` — выполняет GET-запрос на эндпоинт /`product` и возвращает промис с объектом, содержащим массив товаров и их количество
+`createOrder(order: IOrder): Promise<IOrderResponse>` — выполняет POST-запрос на эндпоинт /order с данными заказа и возвращает промис с id заказа и итоговой суммой
