@@ -1,5 +1,5 @@
-import { IApi, IProduct, IProductListResponse, IOrder, IOrderResponse } from "../../../types";
-import { PRODUCT_ENDPOINT, ORDER_ENDPOINT } from "../../../utils/constants";
+import { IApi, IProduct, IProductListResponse, IOrder, IOrderResponse } from "../types";
+import { PRODUCT_ENDPOINT, ORDER_ENDPOINT } from "../utils/constants";
 
 export class WebLarekApi {
   protected api: IApi;

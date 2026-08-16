@@ -5,8 +5,8 @@ import { BasketProducts } from './components/base/Models/BasketProducts';
 import { Buyer } from './components/base/Models/Buyer';
 import { apiProducts } from './utils/data';
 import { Api } from "./components/base/Api";
-import { WebLarekApi } from './components/base/Models/WeblarekApi';
 import { API_URL } from "./utils/constants";
+import { WebLarekApi } from './components/Weblarek';
 
 
 const catalog = new ProductsModels();
@@ -21,7 +21,7 @@ console.log("Товар найден по id:", foundProduct);
 catalog.openProduct(apiProducts.items[0]);
 console.log("Открытый товар:", catalog.getOpenedProduct());
 
-console.log("Тестируем ProductsModel");
+console.log("Тестируем BasketProducts");
 basket.addProduct(apiProducts.items[0]);
 basket.addProduct(apiProducts.items[1]);
 console.log("Итоговая сумма", basket.getTotalPrice());

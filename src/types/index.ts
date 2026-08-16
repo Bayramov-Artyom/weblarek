@@ -38,9 +38,4 @@ export interface IOrderResponse{
     total: number;
 }
 
-export interface IError{
-    payment?: string;
-    email?: string;
-    phone?: string;
-    address?: string;
-}
+export type IError = Partial<Record<keyof IBuyer, string>>;
