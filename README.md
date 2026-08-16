@@ -154,12 +154,7 @@ interface IOrderResponse{
 
 #### Интерфейс ошибок IError
 ```ts 
-interface IError{
-    payment?: string;
-    email?: string;
-    phone?: string;
-    address?: string;
-}
+export type IError = Partial<Record<keyof IBuyer, string>>;
 ```
 
 
