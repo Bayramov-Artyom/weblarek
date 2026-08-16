@@ -112,3 +112,56 @@ interface IProduct {
   price: number | null;
 }
 ```
+
+#### Тип способа оплаты TPayment
+```ts
+type TPayment = "cash"|"card";
+```
+
+#### Интерфейс IBuyer
+```ts
+interface IBuyer {
+  payment: TPayment;
+  email: string;
+  phone: string;
+  address: string;
+}
+```
+
+#### Интерфейс заказа IOrder
+```ts 
+interface IOrder extends IBuyer{
+    items: string[];
+    total: number;
+}
+```
+
+#### Интерфейс ответа сервера со списком товаров IProductListResponse
+```ts
+interface IProductListResponse<T> {
+  total: number;
+  items: T[];
+}
+```
+
+#### Интерфейс ответа с сервера по созданному заказу IOrderResponse
+```ts
+interface IOrderResponse{
+    id: string;
+    total: number;
+}
+```
+
+#### Интерфейс ошибок IError
+```ts 
+interface IError{
+    payment?: string;
+    email?: string;
+    phone?: string;
+    address?: string;
+}
+```
+
+
+### Модели данных
+
