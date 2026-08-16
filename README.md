@@ -102,6 +102,7 @@ Presenter - презентер содержит основную логику п
 ### Данные
 
 #### Интерфейс IProduct
+```ts
 interface IProduct {
   id: string;
   description: string;
@@ -110,3 +111,4 @@ interface IProduct {
   category: string;
   price: number | null;
 }
+```
