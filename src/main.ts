@@ -1,12 +1,14 @@
 import './scss/styles.scss';
 
-import { ProductsModels } from './components/base/Models/ProductsModel';
-import { BasketProducts } from './components/base/Models/BasketProducts';
-import { Buyer } from './components/base/Models/Buyer';
+import { ProductsModels } from './components/Models/ProductsModel';
+import { BasketProducts } from './components/Models/BasketProducts';
+import { Buyer } from './components/Models/Buyer';
 import { apiProducts } from './utils/data';
 import { Api } from "./components/base/Api";
 import { API_URL } from "./utils/constants";
 import { WebLarekApi } from './components/Weblarek';
+
+
 
 
 const catalog = new ProductsModels();

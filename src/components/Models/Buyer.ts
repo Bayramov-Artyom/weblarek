@@ -1,4 +1,4 @@
-import { TPayment, IBuyer, IError } from "../../../types";
+import { TPayment, IBuyer, IError } from "../../types";
 
 export class Buyer {
     protected payment: TPayment | null;
