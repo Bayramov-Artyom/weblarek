@@ -1,4 +1,5 @@
-import { TPayment, IBuyer, IError } from "../../types";
+import { IEvents } from '../base/Events';
+import { TPayment, IBuyer, IError } from '../../types';
 
 export class Buyer {
     protected payment: TPayment | null;
@@ -6,36 +7,31 @@ export class Buyer {
     protected phone: string;
     protected email: string;
 
-    constructor() {
+    constructor(protected events: IEvents) {
         this.payment = null;
-        this.address = "";
-        this.phone = "";
-        this.email = "";
+        this.address = '';
+        this.phone = '';
+        this.email = '';
     }
 
     updatePayment(payment: TPayment | null): void {
         this.payment = payment;
+        this.events.emit('buyer:changed');
     }
 
     updateAddress(address: string): void {
         this.address = address;
+        this.events.emit('buyer:changed');
     }
 
     updatePhone(phone: string): void {
         this.phone = phone;
+        this.events.emit('buyer:changed');
     }
 
     updateEmail(email: string): void {
         this.email = email;
-    }
-
-    getBuyer(): IBuyer {
-        return {
-            payment: this.payment,
-            address: this.address,
-            phone: this.phone,
-            email: this.email,
-        };
+        this.events.emit('buyer:changed');
     }
 
     deleteBuyer(): void {
@@ -43,6 +39,15 @@ export class Buyer {
         this.address = "";
         this.phone = "";
         this.email = "";
+        this.events.emit('buyer:changed');
+    }
+    getBuyer(): IBuyer {
+        return {
+            payment: this.payment,
+            address: this.address,
+            phone: this.phone,
+            email: this.email,
+        };
     }
 
     validate(): IError {

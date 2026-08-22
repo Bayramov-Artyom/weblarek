@@ -232,3 +232,205 @@ constructor(api: IApi)
 Методы:
 `getProductList(): Promise<IProductListResponse<IProduct>>` — выполняет GET-запрос на эндпоинт /`product` и возвращает промис с объектом, содержащим массив товаров и их количество
 `createOrder(order: IOrder): Promise<IOrderResponse>` — выполняет POST-запрос на эндпоинт /order с данными заказа и возвращает промис с id заказа и итоговой суммой
+
+
+
+
+
+### Данные представления
+
+#### Интерфейс IHeaderData
+```ts
+interface IHeaderData {
+  counter: number;
+}
+```
+#### Интерфейс IGalleryData
+```ts
+interface IGalleryData {
+  catalog: HTMLElement[];
+}
+```
+#### Интерфейс IModalData
+```ts
+interface IModalData {
+  content: HTMLElement;
+}
+```
+#### Интерфейс ICardData и типы карточек
+```ts
+interface ICardData {
+  title: string;
+  price: number | null;
+}
+```
+```ts
+type TCardCatalog = ICardData & Pick<IProduct, 'id' | 'image' | 'category'>;
+type TCardPreview = TCardCatalog & Pick<IProduct, 'description'> & {
+  buttonText: string;
+  buttonDisabled: boolean;
+};
+type TCardBasket = ICardData & Pick<IProduct, 'id'> & { index: number };
+```
+#### Интерфейс IBasketData
+```ts
+interface IBasketData {
+  items: HTMLElement[];
+  total: number;
+  buttonDisabled: boolean;
+}
+```
+#### Интерфейс IFormState и типы форм
+```ts
+interface IFormState {
+  valid: boolean;
+  errors: string[];
+}
+```
+```ts
+type TOrderFormData = IFormState & Pick<IBuyer, 'payment' | 'address'>;
+type TContactsFormData = IFormState & Pick<IBuyer, 'email' | 'phone'>;
+```
+#### Интерфейс ISuccessData
+```ts
+interface ISuccessData {
+  total: number;
+}
+```
+
+#### Классы представления
+
+#### Класс Header
+Отображает шапку сайта: счётчик товаров в корзине, кнопка открытия корзины.
+```ts
+constructor(container: HTMLElement, events: IEvents)
+```
+Поля: `protected counterElement: HTMLElement`, `protected basketButton: HTMLButtonElement`, `protected events: IEvents`
+
+Методы: `set counter(value: number)` — записывает значение в `counterElement`.
+При клике на `basketButton` генерирует событие `basket:open`.
+
+#### Класс Modal
+Универсальная обёртка модального окна — принимает любой DOM-элемент как содержимое.
+```ts
+constructor(container: HTMLElement, events: IEvents)
+```
+Поля: `protected closeButton: HTMLButtonElement`, `protected contentElement: HTMLElement`, `protected events: IEvents`
+
+Методы: `set content(value: HTMLElement)` — очищает `contentElement` и вставляет переданный узел.
+`open(): void` — добавляет модификатор `modal_active`.
+`close(): void` — убирает модификатор, очищает содержимое.
+При клике на `closeButton` или на оверлей вызывается `close()`.
+
+#### Класс Gallery
+Каталог товаров на главной странице.
+```ts
+constructor(container: HTMLElement)
+```
+Поля: `protected catalogElement: HTMLElement`
+
+Методы: `set catalog(items: HTMLElement[])` — заменяет содержимое `catalogElement`.
+
+#### Класс Card
+Общая часть для всех видов карточек товара — заголовок и цена.
+```ts
+constructor(container: HTMLElement)
+```
+Поля: `protected titleElement: HTMLElement`, `protected priceElement: HTMLElement`
+
+Методы: `set title(value: string)`, `set price(value: number | null)` — если `null`, выводит «Бесценно» вместо числа.
+
+#### Класс `CardCatalog extends Card<TCardCatalog>`
+Карточка в каталоге на главной.
+```ts
+constructor(container: HTMLElement, onClick: () => void)
+```
+Поля: `protected imageElement: HTMLImageElement`, `protected categoryElement: HTMLElement`
+
+Методы: `set image(value: string)`, `set category(value: string)` — записывает текст и переключает CSS-модификатор через `categoryMap`.
+При клике на `container` вызывает переданный `onClick`.
+
+#### Класс `CardPreview extends Card<TCardPreview>`
+Карточка в модальном окне.
+```ts
+constructor(container: HTMLElement, events: IEvents)
+```
+Поля: `protected imageElement: HTMLImageElement`, `protected categoryElement: HTMLElement`, `protected descriptionElement: HTMLElement`, `protected button: HTMLButtonElement`
+
+Методы: `set image(value: string)`, `set category(value: string)`, `set description(value: string)`, `set buttonText(value: string)`, `set buttonDisabled(value: boolean)`.
+При клике на `button` генерирует **`card:action`**.
+
+#### Класс `CardBasket extends Card<TCardBasket>`
+Строка товара в корзине.
+```ts
+constructor(container: HTMLElement, onClick: () => void)
+```
+Поля: `protected indexElement: HTMLElement`, `protected deleteButton: HTMLButtonElement`
+
+Методы: `set index(value: number)`.
+При клике на `deleteButton` вызывает переданный `onClick`.
+
+#### Класс Basket
+```ts
+constructor(container: HTMLElement, events: IEvents)
+```
+Поля: `protected listElement: HTMLElement`, `protected totalElement: HTMLElement`, `protected button: HTMLButtonElement`
+
+Методы: `set items(items: HTMLElement[])` — рендерит список.
+`set total(value: number)`.
+`set buttonDisabled(value: boolean)` — блокирует кнопку оформления.
+При клике на `button` генерирует `order:open`.
+
+#### Класс Form
+Общая логика формы: ошибки, доступность кнопки submit.
+```ts
+constructor(container: HTMLFormElement, events: IEvents)
+```
+Поля: `protected submitButton: HTMLButtonElement`, `protected errorsElement: HTMLElement`
+
+Методы: `set valid(value: boolean)` — переключает `disabled` у `submitButton`.
+`set errors(value: string[])` — выводит текст ошибок.
+На событие `input` формы генерирует `${container.name}.${target.name}:change` с данными `{ field, value }`.
+На `submit` вызывает `event.preventDefault()` и генерирует `${container.name}:submit`.
+
+### Презентер
+
+Презентер реализован в `main.ts` в виде набора обработчиков событий, без выноса в отдельный класс — простая архитектура согласуется с тем, что у приложения одна страница и относительно небольшой набор сценариев.
+
+Презентер отвечает за:
+- подписку на все события моделей и представлений через единый брокер `EventEmitter`;
+- преобразование данных между слоями (например, сборку `IOrder` из данных `Buyer` и `BasketProducts` перед отправкой на сервер);
+- вызов методов моделей в ответ на действия пользователя (например, `basket.addProduct(product)` по событию `card:action`);
+- вызов `render()` представлений в ответ на события моделей (`catalog:changed` → `gallery.render(...)`) или на событие открытия модального окна (`order:open` → `modal.render(...); modal.open();`).
+
+Презентер не генерирует события — он только их обрабатывает, что соответствует принципу однонаправленного потока: действие пользователя → событие представления → изменение модели → событие модели → перерисовка представления.
+
+#### Класс `OrderForm extends Form<TOrderFormData>`
+Форма выбора способа оплаты и адреса.
+```ts
+constructor(container: HTMLFormElement, events: IEvents)
+```
+Поля: `protected cardButton: HTMLButtonElement`, `protected cashButton: HTMLButtonElement`, `protected addressInput: HTMLInputElement`
+
+Методы: `set payment(value: TPayment | null)` — переключает модификатор `button_alt-active` на соответствующей кнопке.
+`set address(value: string)`.
+При клике на `cardButton`/`cashButton` генерирует `order.payment:change` с `{ field: 'payment', value: 'card' | 'cash' }`.
+
+#### Класс `ContactsForm extends Form<TContactsFormData>`
+Форма email и телефона.
+```ts
+constructor(container: HTMLFormElement, events: IEvents)
+```
+Поля: `protected emailInput: HTMLInputElement`, `protected phoneInput: HTMLInputElement`
+
+Методы: `set email(value: string)`, `set phone(value: string)`.
+
+#### Класс Success
+Экран подтверждения заказа.
+```ts
+constructor(container: HTMLElement, events: IEvents)
+```
+Поля: `protected closeButton: HTMLButtonElement`, `protected descriptionElement: HTMLElement`, `protected events: IEvents`
+
+Методы: `set total(value: number)` — выводит «Списано N синапсов».
+При клике на `closeButton` генерирует **`success:close`**.

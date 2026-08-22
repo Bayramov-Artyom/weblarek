@@ -22,4 +22,5 @@ export const settings = {
 
 export const PRODUCT_ENDPOINT = '/product';
 export const ORDER_ENDPOINT = '/order';
+export type CategoryKey = keyof typeof categoryMap;
 
